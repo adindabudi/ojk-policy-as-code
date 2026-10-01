@@ -1,0 +1,33 @@
+// OJK checklist controls: compliance per OJK group, split by estate (Azure vs on-premises through Azure Arc).
+// Run in Azure Resource Graph Explorer, or: az graph query -q "$(cat queries/ojk-compliance-by-group.kql)"
+// "No data" = the control has no assessment yet (for example, a Defender for Cloud or Update Manager assessment
+// that is not available for the resource or region). Treat it as "not evidenced", not as passed.
+policyresources
+| where type =~ 'microsoft.policyinsights/policystates'
+| where tostring(properties.policySetDefinitionName) =~ 'ojk-fsi-checklist-2026-03'
+| extend state = tostring(properties.complianceState), reason = tostring(properties.complianceReasonCode)
+| extend groupKey = tolower(tostring(properties.policyDefinitionGroupNames[0]))
+| extend estate = iff(tostring(properties.resourceType) startswith 'Microsoft.HybridCompute' or tostring(properties.resourceType) startswith 'Microsoft.Kubernetes', 'On-premises (Azure Arc)', 'Azure')
+| extend result = case(state == 'Exempt', 'Exempt (approved)',
+                       state == 'NonCompliant' and reason in ('AssessmentNotFound', 'GuestConfigurationAssignmentNotFound'), 'No data',
+                       state == 'NonCompliant', 'Non-compliant',
+                       state == 'Compliant', 'Compliant',
+                       state)
+| extend group = case(
+    groupKey == 'ojk-01-data-location', 'OJK-01 Data location',
+    groupKey == 'ojk-02-confidentiality', 'OJK-02 Confidentiality',
+    groupKey == 'ojk-03-network-isolation', 'OJK-03 Network isolation',
+    groupKey == 'ojk-04-identity-access', 'OJK-04 Identity and access',
+    groupKey == 'ojk-05-security-baseline', 'OJK-05 Security baseline',
+    groupKey == 'ojk-06-patch-vulnerability', 'OJK-06 Patch and vulnerability',
+    groupKey == 'ojk-07-monitoring-incident', 'OJK-07 Monitoring and incident',
+    groupKey == 'ojk-08-provider-monitoring', 'OJK-08 Provider monitoring',
+    groupKey == 'ojk-09-backup-resilience', 'OJK-09 Backup and resilience',
+    groupKey)
+| summarize Compliant = countif(result == 'Compliant'),
+            NonCompliant = countif(result == 'Non-compliant'),
+            Exempt = countif(result == 'Exempt (approved)'),
+            NoData = countif(result == 'No data'),
+            Resources = dcount(tostring(properties.resourceId))
+    by group, estate
+| order by group asc, estate asc

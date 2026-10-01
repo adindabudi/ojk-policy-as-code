@@ -1,0 +1,16 @@
+// Pending updates per server from Azure Update Manager periodic assessment (Azure VMs and Azure Arc-enabled servers).
+// Enable periodic assessment with the policy "Machines should be configured to periodically check for missing
+// system updates" (OJK-06) or by setting assessmentMode = AutomaticByPlatform on the machine.
+patchassessmentresources
+| where type in~ ('microsoft.hybridcompute/machines/patchassessmentresults/softwarepatches',
+                  'microsoft.compute/virtualmachines/patchassessmentresults/softwarepatches')
+| extend server = tostring(split(id, '/')[8]),
+         resourceGroup = tostring(split(id, '/')[4]),
+         platform = iff(id contains '/Microsoft.HybridCompute/', 'Azure Arc', 'Azure VM'),
+         classification = tostring(properties.classifications[0]),
+         update = strcat('KB', tostring(properties.kbId), ' ', tostring(properties.patchName))
+| summarize pendingSecurityOrCritical = countif(classification in ('Security', 'Critical')),
+            pendingOther = countif(classification !in ('Security', 'Critical')),
+            securityUpdates = make_list_if(update, classification in ('Security', 'Critical'))
+    by server, resourceGroup, platform
+| order by pendingSecurityOrCritical desc, server asc

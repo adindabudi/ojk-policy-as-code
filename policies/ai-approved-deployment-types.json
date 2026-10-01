@@ -1,0 +1,57 @@
+{
+  "name": "ojk-ai-approved-deployment-types",
+  "properties": {
+    "displayName": "Foundry model deployments should only use approved deployment types",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "Allows only Microsoft Foundry and Azure OpenAI model deployment types (sku.name) whose data processing location is approved by the bank. Standard and ProvisionedManaged process prompts and completions within the Azure geography of the resource. DataZone* types process within a Microsoft-defined data zone (for example Asia Pacific) and Global* types can process in any Azure region, so they count as processing outside Indonesia.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Cognitive Services",
+      "source": "Rule pattern from Microsoft Learn: Deployment types for Microsoft Foundry Models (Azure Policy section)."
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit, Deny or Disabled."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "allowedDeploymentTypes": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Allowed deployment types",
+          "description": "Approved sku.name values, for example Standard, ProvisionedManaged, DataZoneStandard, DataZoneProvisionedManaged, DataZoneBatch, GlobalStandard, GlobalProvisionedManaged, GlobalBatch."
+        },
+        "defaultValue": [
+          "Standard",
+          "ProvisionedManaged"
+        ]
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.CognitiveServices/accounts/deployments"
+          },
+          {
+            "field": "Microsoft.CognitiveServices/accounts/deployments/sku.name",
+            "notIn": "[parameters('allowedDeploymentTypes')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

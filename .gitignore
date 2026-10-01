@@ -1,0 +1,39 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfplan.json
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Local variable files can hold subscription, tenant and management group IDs.
+*.tfvars
+*.tfvars.json
+!terraform/environments/*.tfvars
+!**/*.tfvars.example
+
+# Bicep and ARM build output
+*.json.bak
+bicep/*.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Provider lock files are generated per platform on first init.
+.terraform.lock.hcl
+

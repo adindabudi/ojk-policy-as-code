@@ -1,0 +1,25 @@
+// Offshore placements recorded as OJK approvals (policy exemptions), with expiry, plus resources in regions
+// that are not approved and have no exemption.
+policyresources
+| where type =~ 'microsoft.authorization/policyexemptions'
+| where tostring(properties.metadata.ojkApprovalReference) != ''
+| extend expiresOn = todatetime(properties.expiresOn)
+| project entry = 'Approved placement',
+          scope = tostring(split(id, '/providers/Microsoft.Authorization/policyExemptions/')[0]),
+          ojkApproval = tostring(properties.metadata.ojkApprovalReference),
+          approvedAiDeploymentTypes = tostring(properties.metadata.approvedAiDeploymentTypes),
+          category = tostring(properties.exemptionCategory),
+          expiresOn = format_datetime(expiresOn, 'yyyy-MM-dd'),
+          daysLeft = datetime_diff('day', expiresOn, now()),
+          controls = tostring(properties.policyDefinitionReferenceIds)
+| union (
+    policyresources
+    | where type =~ 'microsoft.policyinsights/policystates'
+    | where tostring(properties.policySetDefinitionName) =~ 'ojk-fsi-checklist-2026-03'
+    | where tostring(properties.policyDefinitionReferenceId) in ('dl-allowed-locations', 'dl-ai-deployment-types')
+    | where tostring(properties.complianceState) == 'NonCompliant'
+    | project entry = 'Not approved', scope = tostring(properties.resourceId), ojkApproval = '', approvedAiDeploymentTypes = '',
+              category = tostring(properties.policyDefinitionReferenceId), expiresOn = '', daysLeft = long(null),
+              controls = tostring(properties.resourceLocation)
+)
+| order by entry asc, daysLeft asc

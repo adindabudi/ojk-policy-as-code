@@ -1,0 +1,31 @@
+# Copy to terraform.tfvars and fill in. Do not commit real IDs to a shared repository.
+subscription_id     = "00000000-0000-0000-0000-000000000000"
+scope_type          = "management_group" # management_group | subscription | resource_group
+management_group_id = "/providers/Microsoft.Management/managementGroups/<platform-or-landing-zones-mg>"
+# resource_group_names = ["<rg-name>"]     # only for scope_type = "resource_group"
+
+location                  = "indonesiacentral"
+list_of_allowed_locations = ["indonesiacentral"]
+
+# Keep the default for every resource group. Allow DataZone* or Global* only for an approved placement,
+# through approved_ai_deployment_types in offshore_exemptions below.
+allowed_ai_deployment_types = ["Standard", "ProvisionedManaged"]
+
+# Phase 1: report only
+effect_data_location        = "Audit"
+effect_preventive           = "Audit"
+effect_detective            = "AuditIfNotExists"
+effect_kubernetes           = "Audit"
+effect_customer_managed_key = "Audit"
+effect_resilience           = "Audit"
+include_arc_machines        = "true"
+
+offshore_exemptions = {
+  # "ojk-dr-apac" = {
+  #   resource_group_id            = "/subscriptions/<sub-id>/resourceGroups/<rg-name>"
+  #   ojk_approval_reference       = "<OJK approval letter number>"
+  #   justification                = "Temporary placement; re-placement plan: <document reference>"
+  #   expires_on                   = "2027-03-31T00:00:00Z"
+  #   approved_ai_deployment_types = ["DataZoneStandard"]
+  # }
+}

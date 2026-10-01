@@ -1,0 +1,64 @@
+// Server evidence for Azure Arc-enabled Windows servers: inventory, patch level, end of support and hardening.
+// One row per server. Export to CSV from Azure Resource Graph Explorer to replace manual weekly inventory exports.
+// updateMonth is derived from the OS build: the monthly cumulative update builds below come from the Windows Server
+// images in Azure Marketplace (January to September 2026). Extend the table each month.
+// For the pending updates themselves, run server-pending-updates.kql (Azure Update Manager periodic assessment).
+resources
+| where type =~ 'microsoft.hybridcompute/machines'
+| where tostring(properties.osType) =~ 'windows'
+| extend osVersion = tostring(properties.osVersion)
+| extend parts = split(osVersion, '.')
+| extend osBuild = strcat(tostring(parts[0]), '.', tostring(parts[1]), '.', tostring(parts[2])), ubr = tolong(parts[3])
+| extend product = case(osBuild == '10.0.14393', 'Windows Server 2016',
+                        osBuild == '10.0.17763', 'Windows Server 2019',
+                        osBuild == '10.0.20348', 'Windows Server 2022',
+                        osBuild == '10.0.26100', 'Windows Server 2025',
+                        osBuild == '6.3.9600',   'Windows Server 2012 R2',
+                        osBuild == '6.2.9200',   'Windows Server 2012',
+                        tostring(properties.osSku))
+| extend endOfSupport = case(osBuild == '10.0.14393', datetime(2027-01-12),
+                             osBuild == '10.0.17763', datetime(2029-01-09),
+                             osBuild == '10.0.20348', datetime(2031-10-14),
+                             osBuild == '10.0.26100', datetime(2034-11-14),
+                             osBuild in ('6.3.9600', '6.2.9200'), datetime(2023-10-10),
+                             datetime(null))
+| extend updateMonth = case(
+    osBuild == '10.0.14393' and ubr >= 9512, '2026-09', osBuild == '10.0.14393' and ubr >= 9418, '2026-08',
+    osBuild == '10.0.14393' and ubr >= 9339, '2026-07', osBuild == '10.0.14393' and ubr >= 9234, '2026-06',
+    osBuild == '10.0.14393' and ubr >= 9140, '2026-05', osBuild == '10.0.14393' and ubr >= 9060, '2026-04',
+    osBuild == '10.0.14393' and ubr >= 8957, '2026-03', osBuild == '10.0.14393' and ubr >= 8868, '2026-02',
+    osBuild == '10.0.14393' and ubr >= 8783, '2026-01',
+    osBuild == '10.0.17763' and ubr >= 9245, '2026-09', osBuild == '10.0.17763' and ubr >= 9121, '2026-08',
+    osBuild == '10.0.17763' and ubr >= 9020, '2026-07', osBuild == '10.0.17763' and ubr >= 8880, '2026-06',
+    osBuild == '10.0.17763' and ubr >= 8755, '2026-05', osBuild == '10.0.17763' and ubr >= 8644, '2026-04',
+    osBuild == '10.0.17763' and ubr >= 8511, '2026-03', osBuild == '10.0.17763' and ubr >= 8389, '2026-02',
+    osBuild == '10.0.17763' and ubr >= 8276, '2026-01',
+    osBuild == '10.0.20348' and ubr >= 5622, '2026-09', osBuild == '10.0.20348' and ubr >= 5499, '2026-08',
+    osBuild == '10.0.20348' and ubr >= 5386, '2026-07', osBuild == '10.0.20348' and ubr >= 5256, '2026-06',
+    osBuild == '10.0.20348' and ubr >= 5139, '2026-05', osBuild == '10.0.20348' and ubr >= 5020, '2026-04',
+    osBuild == '10.0.20348' and ubr >= 4893, '2026-03', osBuild == '10.0.20348' and ubr >= 4773, '2026-02',
+    osBuild == '10.0.20348' and ubr >= 4648, '2026-01',
+    osBuild == '10.0.26100' and ubr >= 33438, '2026-09', osBuild == '10.0.26100' and ubr >= 33296, '2026-08',
+    osBuild == '10.0.26100' and ubr >= 33158, '2026-07', osBuild == '10.0.26100' and ubr >= 32995, '2026-06',
+    osBuild == '10.0.26100' and ubr >= 32860, '2026-05', osBuild == '10.0.26100' and ubr >= 32690, '2026-04',
+    osBuild == '10.0.26100' and ubr >= 32522, '2026-03', osBuild == '10.0.26100' and ubr >= 32370, '2026-02',
+    osBuild == '10.0.26100' and ubr >= 32230, '2026-01',
+    'before 2026-01')
+| extend latestUpdateMonth = '2026-09'  // newest month in the table above
+| extend monthsBehind = iff(updateMonth startswith '2026', datetime_diff('month', todatetime(strcat(latestUpdateMonth, '-01')), todatetime(strcat(updateMonth, '-01'))), int(null))
+| extend daysToEndOfSupport = datetime_diff('day', endOfSupport, now())
+| extend machineId = tolower(id)
+| project machineId, server = name, site = tostring(tags['site']), azureRegion = location, product, osVersion, updateMonth, monthsBehind,
+          endOfSupport = format_datetime(endOfSupport, 'yyyy-MM-dd'), daysToEndOfSupport,
+          esuEligibility = tostring(properties.licenseProfile.esuProfile.esuEligibility),
+          arcStatus = tostring(properties.status), lastSeen = tostring(properties.lastStatusChange)
+| join kind=leftouter (
+    guestconfigurationresources
+    | where name in~ ('AzureWindowsBaseline', 'AuditSecureProtocol')
+    | extend machineId = tolower(tostring(split(id, '/providers/Microsoft.GuestConfiguration/')[0]))
+    | summarize securityBaseline = anyif(tostring(properties.complianceStatus), name =~ 'AzureWindowsBaseline'),
+                secureProtocols = anyif(tostring(properties.complianceStatus), name =~ 'AuditSecureProtocol')
+        by machineId
+) on machineId
+| project-away machineId, machineId1
+| order by monthsBehind desc, daysToEndOfSupport asc

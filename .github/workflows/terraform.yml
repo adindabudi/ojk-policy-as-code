@@ -1,0 +1,64 @@
+name: terraform
+
+on:
+  pull_request:
+    paths:
+      - "terraform/**"
+      - "mapping/**"
+      - "policies/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.1
+      - name: fmt
+        run: terraform fmt -check -recursive
+      - name: validate
+        run: |
+          terraform init -backend=false -input=false
+          terraform validate
+
+  # Runs only when OIDC to Azure is set up: repository variables AZURE_CLIENT_ID, AZURE_TENANT_ID,
+  # AZURE_SUBSCRIPTION_ID and TFVARS_FILE (for example environments/demo-lab.tfvars).
+  # Add a remote backend before you use plan output for real changes.
+  plan:
+    needs: validate
+    if: ${{ vars.AZURE_CLIENT_ID != '' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    env:
+      ARM_USE_OIDC: "true"
+      ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.1
+      - name: plan
+        run: |
+          terraform init -input=false
+          terraform plan -input=false -no-color \
+            -var-file="${{ vars.TFVARS_FILE }}" -var="subscription_id=${{ vars.AZURE_SUBSCRIPTION_ID }}" | tee plan.txt
+      - name: summary
+        run: |
+          echo '### terraform plan' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep -E '^(  #|Plan:|No changes)' plan.txt >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
