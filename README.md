@@ -25,7 +25,7 @@ Hasilnya:
 - Penempatan di luar Indonesia yang sudah disetujui OJK tercatat sebagai exemption, lengkap dengan nomor surat dan tanggal kedaluwarsa.
 
 > [!IMPORTANT]
-> Repo ini adalah sample. Isinya bukan nasihat hukum dan tidak menjamin kepatuhan terhadap regulasi OJK. Azure Policy hanya memeriksa konfigurasi teknis, dan tanggung jawab kepatuhan tetap ada di bank. Tinjau mapping, effect, dan rujukan regulasi bersama tim compliance sebelum memakai hasilnya sebagai bukti audit.
+> Repo ini adalah sample pribadi, bukan produk resmi Microsoft, dan tidak didukung oleh Microsoft Support. Isinya bukan nasihat hukum dan tidak menjamin kepatuhan terhadap regulasi OJK. Azure Policy hanya memeriksa konfigurasi teknis, dan tanggung jawab kepatuhan tetap ada di bank. Tinjau mapping, effect, dan rujukan regulasi bersama tim compliance sebelum memakai hasilnya sebagai bukti audit.
 
 ## Ringkasan
 
@@ -392,9 +392,9 @@ terraform destroy -var="subscription_id=<subscription-id>"
 ## Kontribusi, keamanan, dan dukungan
 
 - Cara berkontribusi: [CONTRIBUTING.md](CONTRIBUTING.md).
-- Laporkan masalah keamanan sesuai [SECURITY.md](SECURITY.md), jangan lewat issue publik.
+- Laporkan masalah keamanan secara privat lewat GitHub sesuai [SECURITY.md](SECURITY.md), jangan lewat issue publik.
 - Pertanyaan dan bug: [SUPPORT.md](SUPPORT.md).
-- Code of conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+- Code of conduct: [Contributor Covenant 3.0](CODE_OF_CONDUCT.md).
 
 ## Lisensi
 

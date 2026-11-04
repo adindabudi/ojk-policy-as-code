@@ -17,7 +17,7 @@ All notable changes to this sample. The version matches `initiative.metadata.ver
 - `.terraform.lock.hcl` for both Terraform folders, with checksums for Linux, Windows and macOS.
 - Bicep exemption template: `enforcementMode` parameter for the narrower AI assignment, like `enforce` in Terraform.
 - README: position against Azure landing zones, prerequisites and permissions, remote state, and day-2 operations.
-- Repository files: changelog, contributing guide, security policy, support, code of conduct, license, code owners, and issue and pull request templates.
+- Repository files: MIT license, security policy with private reporting through GitHub, code of conduct (Contributor Covenant 3.0), contributing guide, support, changelog, code owners, and issue and pull request templates.
 
 ### Changed
 

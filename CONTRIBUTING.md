@@ -27,3 +27,9 @@ az bicep build --file bicep/main.mg.bicep && az bicep lint --file bicep/main.mg.
 ```
 
 The `validate` workflow runs the same checks on every pull request. A change that moves an effect to `Deny`, adds a preview built-in, or changes the checklist mapping also needs a test deployment at resource group scope in a non-production subscription. Describe what you tested in the pull request.
+
+## License and conduct
+
+Contributions are licensed under the [MIT License](LICENSE) of this repository. By opening a pull request, you confirm that you have the right to submit the change under that license.
+
+Everyone who takes part in this project follows the [code of conduct](CODE_OF_CONDUCT.md). Report security issues as described in [SECURITY.md](SECURITY.md), not in issues or pull requests.
