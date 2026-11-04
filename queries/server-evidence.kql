@@ -1,7 +1,10 @@
 // Server evidence for Azure Arc-enabled Windows servers: inventory, patch level, end of support and hardening.
 // One row per server. Export to CSV from Azure Resource Graph Explorer to replace manual weekly inventory exports.
 // updateMonth is derived from the OS build: the monthly cumulative update builds below come from the Windows Server
-// images in Azure Marketplace (January to September 2026). Extend the table each month.
+// images in Azure Marketplace (January to October 2026). Extend the table each month after Patch Tuesday: the lowest
+// build of the month is the second number of the image version, for example 14393.9612.261012 -> 9612:
+//   az vm image list --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2016-datacenter-gensecond --all -o table
+// Use the SKUs 2019-datacenter-gensecond, 2022-datacenter-g2 and 2025-datacenter-g2 for the other builds.
 // For the pending updates themselves, run server-pending-updates.kql (Azure Update Manager periodic assessment).
 resources
 | where type =~ 'microsoft.hybridcompute/machines'
@@ -23,28 +26,32 @@ resources
                              osBuild in ('6.3.9600', '6.2.9200'), datetime(2023-10-10),
                              datetime(null))
 | extend updateMonth = case(
+    osBuild == '10.0.14393' and ubr >= 9612, '2026-10',
     osBuild == '10.0.14393' and ubr >= 9512, '2026-09', osBuild == '10.0.14393' and ubr >= 9418, '2026-08',
     osBuild == '10.0.14393' and ubr >= 9339, '2026-07', osBuild == '10.0.14393' and ubr >= 9234, '2026-06',
     osBuild == '10.0.14393' and ubr >= 9140, '2026-05', osBuild == '10.0.14393' and ubr >= 9060, '2026-04',
     osBuild == '10.0.14393' and ubr >= 8957, '2026-03', osBuild == '10.0.14393' and ubr >= 8868, '2026-02',
     osBuild == '10.0.14393' and ubr >= 8783, '2026-01',
+    osBuild == '10.0.17763' and ubr >= 9376, '2026-10',
     osBuild == '10.0.17763' and ubr >= 9245, '2026-09', osBuild == '10.0.17763' and ubr >= 9121, '2026-08',
     osBuild == '10.0.17763' and ubr >= 9020, '2026-07', osBuild == '10.0.17763' and ubr >= 8880, '2026-06',
     osBuild == '10.0.17763' and ubr >= 8755, '2026-05', osBuild == '10.0.17763' and ubr >= 8644, '2026-04',
     osBuild == '10.0.17763' and ubr >= 8511, '2026-03', osBuild == '10.0.17763' and ubr >= 8389, '2026-02',
     osBuild == '10.0.17763' and ubr >= 8276, '2026-01',
+    osBuild == '10.0.20348' and ubr >= 5761, '2026-10',
     osBuild == '10.0.20348' and ubr >= 5622, '2026-09', osBuild == '10.0.20348' and ubr >= 5499, '2026-08',
     osBuild == '10.0.20348' and ubr >= 5386, '2026-07', osBuild == '10.0.20348' and ubr >= 5256, '2026-06',
     osBuild == '10.0.20348' and ubr >= 5139, '2026-05', osBuild == '10.0.20348' and ubr >= 5020, '2026-04',
     osBuild == '10.0.20348' and ubr >= 4893, '2026-03', osBuild == '10.0.20348' and ubr >= 4773, '2026-02',
     osBuild == '10.0.20348' and ubr >= 4648, '2026-01',
+    osBuild == '10.0.26100' and ubr >= 33650, '2026-10',
     osBuild == '10.0.26100' and ubr >= 33438, '2026-09', osBuild == '10.0.26100' and ubr >= 33296, '2026-08',
     osBuild == '10.0.26100' and ubr >= 33158, '2026-07', osBuild == '10.0.26100' and ubr >= 32995, '2026-06',
     osBuild == '10.0.26100' and ubr >= 32860, '2026-05', osBuild == '10.0.26100' and ubr >= 32690, '2026-04',
     osBuild == '10.0.26100' and ubr >= 32522, '2026-03', osBuild == '10.0.26100' and ubr >= 32370, '2026-02',
     osBuild == '10.0.26100' and ubr >= 32230, '2026-01',
     'before 2026-01')
-| extend latestUpdateMonth = '2026-09'  // newest month in the table above
+| extend latestUpdateMonth = '2026-10'  // newest month in the table above
 | extend monthsBehind = iff(updateMonth startswith '2026', datetime_diff('month', todatetime(strcat(latestUpdateMonth, '-01')), todatetime(strcat(updateMonth, '-01'))), int(null))
 | extend daysToEndOfSupport = datetime_diff('day', endOfSupport, now())
 | extend machineId = tolower(id)
@@ -61,4 +68,7 @@ resources
         by machineId
 ) on machineId
 | project-away machineId, machineId1
+// No machine configuration result (for example a disconnected server) is "No data", not a pass.
+| extend securityBaseline = iff(isempty(securityBaseline), 'No data', securityBaseline),
+         secureProtocols = iff(isempty(secureProtocols), 'No data', secureProtocols)
 | order by monthsBehind desc, daysToEndOfSupport asc

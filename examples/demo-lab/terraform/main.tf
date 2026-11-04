@@ -165,6 +165,8 @@ resource "azurerm_windows_virtual_machine" "server" {
 # ---------------------------------------------------------------------------
 # Azure resources in the approved in-country region.
 # ---------------------------------------------------------------------------
+# The lab is temporary and must be removable with terraform destroy, so prevent_destroy is not set.
+# tflint-ignore: azurerm_resources_missing_prevent_destroy
 resource "azurerm_storage_account" "sample" {
   name                              = "st${var.prefix}${local.suffix}"
   location                          = azurerm_resource_group.idc.location
@@ -180,6 +182,7 @@ resource "azurerm_storage_account" "sample" {
   tags                              = var.tags
 }
 
+# tflint-ignore: azurerm_resources_missing_prevent_destroy
 resource "azurerm_key_vault" "sample" {
   name                          = "kv-${var.prefix}-${local.suffix}"
   location                      = azurerm_resource_group.idc.location

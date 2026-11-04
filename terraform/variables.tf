@@ -1,6 +1,11 @@
 variable "subscription_id" {
   description = "Subscription ID used by the azurerm provider. Also the assignment scope when scope_type = \"subscription\"."
   type        = string
+
+  validation {
+    condition     = can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.subscription_id))
+    error_message = "subscription_id must be a subscription GUID, for example 00000000-0000-0000-0000-000000000000."
+  }
 }
 
 variable "scope_type" {
@@ -15,9 +20,14 @@ variable "scope_type" {
 }
 
 variable "management_group_id" {
-  description = "Management group resource ID, for example /providers/Microsoft.Management/managementGroups/bank-platform. Required when scope_type = management_group."
+  description = "Management group resource ID, for example /providers/Microsoft.Management/managementGroups/contoso (the intermediate root of an Azure landing zone). Required when scope_type = management_group."
   type        = string
   default     = null
+
+  validation {
+    condition     = var.management_group_id == null || can(regex("^/providers/Microsoft.Management/managementGroups/[^/]+$", var.management_group_id))
+    error_message = "management_group_id must be a resource ID such as /providers/Microsoft.Management/managementGroups/<name>."
+  }
 }
 
 variable "resource_group_names" {
@@ -27,7 +37,7 @@ variable "resource_group_names" {
 }
 
 variable "location" {
-  description = "Region for the policy assignment identity."
+  description = "Region of the policy assignment's managed identity. Keep it in an allowed region."
   type        = string
   default     = "indonesiacentral"
 }
@@ -50,14 +60,20 @@ variable "enforce" {
 }
 
 variable "not_scopes" {
-  description = "Scopes excluded from the assignment."
+  description = "Scopes excluded from the assignment, for example the Sandbox management group of an Azure landing zone."
   type        = list(string)
   default     = []
 }
 
 variable "list_of_allowed_locations" {
-  type    = list(string)
-  default = ["indonesiacentral"]
+  description = "Regions allowed for resources and resource groups (OJK-01). Azure Arc resources keep their metadata in the region chosen at onboarding, so that region must be in this list."
+  type        = list(string)
+  default     = ["indonesiacentral"]
+
+  validation {
+    condition     = length(var.list_of_allowed_locations) > 0
+    error_message = "list_of_allowed_locations needs at least one region."
+  }
 }
 
 variable "allowed_ai_deployment_types" {
@@ -67,8 +83,9 @@ variable "allowed_ai_deployment_types" {
 }
 
 variable "effect_data_location" {
-  type    = string
-  default = "Audit"
+  description = "Effect of the location and AI deployment type controls (OJK-01). Start with Audit. Switch to Deny after every approved offshore placement is recorded in offshore_exemptions."
+  type        = string
+  default     = "Audit"
 
   validation {
     condition     = contains(["Audit", "Deny", "Disabled"], var.effect_data_location)
@@ -77,8 +94,9 @@ variable "effect_data_location" {
 }
 
 variable "effect_preventive" {
-  type    = string
-  default = "Audit"
+  description = "Effect of the configuration controls that support Deny, such as public network access, TLS versions and local authentication."
+  type        = string
+  default     = "Audit"
 
   validation {
     condition     = contains(["Audit", "Deny", "Disabled"], var.effect_preventive)
@@ -87,8 +105,9 @@ variable "effect_preventive" {
 }
 
 variable "effect_detective" {
-  type    = string
-  default = "AuditIfNotExists"
+  description = "Effect of the AuditIfNotExists controls, such as Defender plans, logs, machine configuration, update assessment and backup."
+  type        = string
+  default     = "AuditIfNotExists"
 
   validation {
     condition     = contains(["AuditIfNotExists", "Disabled"], var.effect_detective)
@@ -97,8 +116,9 @@ variable "effect_detective" {
 }
 
 variable "effect_kubernetes" {
-  type    = string
-  default = "Audit"
+  description = "Effect of the Kubernetes controls for AKS and Azure Arc-enabled Kubernetes clusters."
+  type        = string
+  default     = "Audit"
 
   validation {
     condition     = contains(["Audit", "Deny", "Disabled"], var.effect_kubernetes)
@@ -107,8 +127,9 @@ variable "effect_kubernetes" {
 }
 
 variable "effect_customer_managed_key" {
-  type    = string
-  default = "Audit"
+  description = "Effect of the customer-managed key controls (storage, SQL, Foundry). Audit or Disabled only, because the key choice depends on the data."
+  type        = string
+  default     = "Audit"
 
   validation {
     condition     = contains(["Audit", "Disabled"], var.effect_customer_managed_key)
@@ -117,8 +138,9 @@ variable "effect_customer_managed_key" {
 }
 
 variable "effect_resilience" {
-  type    = string
-  default = "Audit"
+  description = "Effect of the zone redundancy controls. These built-ins are in preview: set Disabled if you don't use preview policies in production."
+  type        = string
+  default     = "Audit"
 
   validation {
     condition     = contains(["Audit", "Deny", "Disabled"], var.effect_resilience)
@@ -127,8 +149,9 @@ variable "effect_resilience" {
 }
 
 variable "include_arc_machines" {
-  type    = string
-  default = "true"
+  description = "\"true\" evaluates Azure Arc-enabled servers in the machine configuration controls (security baseline and secure protocols)."
+  type        = string
+  default     = "true"
 
   validation {
     condition     = contains(["true", "false"], var.include_arc_machines)
@@ -137,7 +160,8 @@ variable "include_arc_machines" {
 }
 
 variable "diagnostic_settings_resource_types" {
-  type = list(string)
+  description = "Resource types that must have diagnostic settings (OJK-07)."
+  type        = list(string)
   default = [
     "Microsoft.ApiManagement/service",
     "Microsoft.ContainerService/managedClusters",
@@ -148,8 +172,9 @@ variable "diagnostic_settings_resource_types" {
 }
 
 variable "service_health_alert_resource_group_name" {
-  type    = string
-  default = "rg-serviceHealthAlert"
+  description = "Resource group in each subscription where the Service Health alert rule is expected (OJK-08). rg-serviceHealthAlert matches the Azure landing zone default."
+  type        = string
+  default     = "rg-serviceHealthAlert"
 }
 
 variable "offshore_exemptions" {

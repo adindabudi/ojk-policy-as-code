@@ -3,8 +3,9 @@ terraform {
 
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">= 4.0.0, < 6.0.0"
+      source = "hashicorp/azurerm"
+      # 5.0.0 is the lowest version that validates this module. .terraform.lock.hcl pins the tested version.
+      version = ">= 5.0.0, < 6.0.0"
     }
   }
 }

@@ -12,10 +12,13 @@ locals {
 
   custom_reference = "custom:${local.ai_definition.name}"
 
+  # definitionVersion pins each built-in to a major version (for example 2.*.*), so a new major version
+  # of a built-in becomes a reviewed change in the mapping instead of arriving on the next deployment.
   members = [
     for m in local.mapping.members : {
       reference_id         = m.referenceId
       policy_definition_id = m.definitionId == local.custom_reference ? azurerm_policy_definition.ai_deployment_types.id : "/providers/Microsoft.Authorization/policyDefinitions/${m.definitionId}"
+      definition_version   = try(m.definitionVersion, null)
       parameter_values     = jsonencode(m.parameters)
       group_names          = m.groups
     }
@@ -119,6 +122,7 @@ resource "azurerm_management_group_policy_set_definition" "ojk" {
     content {
       policy_definition_id = policy_definition_reference.value.policy_definition_id
       reference_id         = policy_definition_reference.value.reference_id
+      version              = policy_definition_reference.value.definition_version
       parameter_values     = policy_definition_reference.value.parameter_values
       policy_group_names   = policy_definition_reference.value.group_names
     }
@@ -150,6 +154,7 @@ resource "azurerm_policy_set_definition" "ojk" {
     content {
       policy_definition_id = policy_definition_reference.value.policy_definition_id
       reference_id         = policy_definition_reference.value.reference_id
+      version              = policy_definition_reference.value.definition_version
       parameter_values     = policy_definition_reference.value.parameter_values
       policy_group_names   = policy_definition_reference.value.group_names
     }

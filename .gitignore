@@ -28,12 +28,16 @@ __pycache__/
 *.pyc
 .venv/
 
+# Terraform backend settings for your own state storage
+backend.hcl
+*.backend.hcl
+
 # Editors and OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
 
-# Provider lock files are generated per platform on first init.
-.terraform.lock.hcl
+# .terraform.lock.hcl is committed on purpose: it pins the tested provider versions and
+# carries checksums for linux_amd64, windows_amd64, darwin_amd64 and darwin_arm64.
 
