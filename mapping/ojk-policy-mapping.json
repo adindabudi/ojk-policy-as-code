@@ -4,11 +4,11 @@
     "displayName": "OJK FSI Checklist (Mar 2026) - technical controls for Azure and Azure Arc",
     "description": "Bank-side technical controls derived from Microsoft's compliance and contract checklist for financial institutions in Indonesia (March 2026). Covers Azure resources, Azure Arc-enabled servers (Windows/Linux, SQL Server) and Azure Arc-enabled Kubernetes. Contractual and Microsoft-side items are not policy-enforceable; see mapping/checklist-coverage.csv. SEOJK 21/2017 references are as cited in the checklist; PADK OJK 1/2026 replaced SEOJK 21/2017 on 1 March 2026.",
     "metadata": {
-      "version": "1.1.0",
+      "version": "1.2.0",
       "category": "Regulatory Compliance",
       "source": "Microsoft - Checklist for Financial Institutions in Indonesia (March 2026): Part 2 Sections A-I, B-I, B-II and Part 3 Sections I-II (Banks)",
       "regulatoryNote": "POJK 11/2022 is the primary reference. The checklist also cites OJK Circular Letter 21/SEOJK.03/2017, which PADK OJK 1/2026 replaced on 1 March 2026. Re-map those references to PADK 1/2026 Lampiran I with your compliance team before you use the results as audit evidence.",
-      "builtInsVerifiedOn": "2026-10-01"
+      "builtInsVerifiedOn": "2026-11-04"
     },
     "parameters": {
       "listOfAllowedLocations": {
@@ -206,6 +206,7 @@
     {
       "referenceId": "dl-allowed-locations",
       "definitionId": "e56962a6-4747-49cd-b67b-bf8b01975c4c",
+      "definitionVersion": "1.*.*",
       "displayName": "Allowed locations",
       "groups": [
         "OJK-01-DATA-LOCATION"
@@ -224,6 +225,7 @@
     {
       "referenceId": "dl-allowed-rg-locations",
       "definitionId": "e765b5de-1225-4ba3-bd56-1ac6695af988",
+      "definitionVersion": "1.*.*",
       "displayName": "Allowed locations for resource groups",
       "groups": [
         "OJK-01-DATA-LOCATION"
@@ -258,6 +260,7 @@
     {
       "referenceId": "enc-storage-secure-transfer",
       "definitionId": "404c3081-a854-4457-ae30-26a93ef643f9",
+      "definitionVersion": "2.*.*",
       "displayName": "Secure transfer to storage accounts should be enabled",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -272,6 +275,7 @@
     {
       "referenceId": "enc-storage-min-tls",
       "definitionId": "fe83a0eb-a853-422d-aac2-1bffd182c5d0",
+      "definitionVersion": "1.*.*",
       "displayName": "Storage accounts should have the specified minimum TLS version",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -289,6 +293,7 @@
     {
       "referenceId": "enc-sql-min-tls",
       "definitionId": "32e6bbec-16b6-44c2-be37-c5b672d103cf",
+      "definitionVersion": "2.*.*",
       "displayName": "Azure SQL Database should be running TLS version 1.2 or newer",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -303,6 +308,7 @@
     {
       "referenceId": "enc-appservice-https",
       "definitionId": "a4af4a39-4135-47fb-b175-47fbdf85311d",
+      "definitionVersion": "4.*.*",
       "displayName": "App Service apps should only be accessible over HTTPS",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -317,6 +323,7 @@
     {
       "referenceId": "enc-appservice-tls",
       "definitionId": "f0e6e85b-9b9f-4a4b-b67b-f730d42f1b0b",
+      "definitionVersion": "2.*.*",
       "displayName": "App Service apps should use the latest TLS version",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -331,6 +338,7 @@
     {
       "referenceId": "enc-sql-tde",
       "definitionId": "17k78e20-9358-41c9-923c-fb736d382a12",
+      "definitionVersion": "2.*.*",
       "displayName": "Transparent Data Encryption on SQL databases should be enabled",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -345,6 +353,7 @@
     {
       "referenceId": "enc-apim-encrypted-protocols",
       "definitionId": "ee7495e7-3ba7-40b6-bfee-c29e22cc75d4",
+      "definitionVersion": "2.*.*",
       "displayName": "API Management APIs should use only encrypted protocols",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -359,6 +368,7 @@
     {
       "referenceId": "enc-windows-secure-protocols",
       "definitionId": "5752e6d6-1206-46d8-8ab1-ecc2f71a8112",
+      "definitionVersion": "4.*.*",
       "displayName": "Windows machines should be configured to use secure communication protocols",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -379,6 +389,7 @@
     {
       "referenceId": "enc-k8s-https-only",
       "definitionId": "1a5b4dca-0b6f-4cf5-907c-56316bc1bf3d",
+      "definitionVersion": "9.*.*",
       "displayName": "Kubernetes clusters should be accessible only over HTTPS",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -393,6 +404,7 @@
     {
       "referenceId": "enc-storage-cmk",
       "definitionId": "6fac406b-40ca-413b-bf8e-0bf964659c25",
+      "definitionVersion": "1.*.*",
       "displayName": "Storage accounts should use customer-managed key for encryption",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -407,6 +419,7 @@
     {
       "referenceId": "enc-sql-cmk",
       "definitionId": "0a370ff3-6cab-4e85-8995-295fd854c5b8",
+      "definitionVersion": "2.*.*",
       "displayName": "SQL servers should use customer-managed keys to encrypt data at rest",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -421,6 +434,7 @@
     {
       "referenceId": "enc-ai-cmk",
       "definitionId": "67121cc7-ff39-4ab8-b7e3-95b84dab487d",
+      "definitionVersion": "2.*.*",
       "displayName": "Azure AI Services resources should encrypt data at rest with a customer-managed key (CMK)",
       "groups": [
         "OJK-02-CONFIDENTIALITY"
@@ -435,6 +449,7 @@
     {
       "referenceId": "net-storage-public-access",
       "definitionId": "b2982f36-99f2-4db5-8eff-283140c09693",
+      "definitionVersion": "1.*.*",
       "displayName": "Storage accounts should disable public network access",
       "groups": [
         "OJK-03-NETWORK-ISOLATION"
@@ -449,6 +464,7 @@
     {
       "referenceId": "net-sql-public-access",
       "definitionId": "1b8ca024-1d5c-4dec-8995-b1a932b41780",
+      "definitionVersion": "1.*.*",
       "displayName": "Public network access on Azure SQL Database should be disabled",
       "groups": [
         "OJK-03-NETWORK-ISOLATION"
@@ -463,6 +479,7 @@
     {
       "referenceId": "net-keyvault-public-access",
       "definitionId": "405c5871-3e91-4644-8a63-58e19d68ff5b",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure Key Vault should disable public network access",
       "groups": [
         "OJK-03-NETWORK-ISOLATION"
@@ -477,6 +494,7 @@
     {
       "referenceId": "net-ai-restrict-network",
       "definitionId": "037eea7a-bd0a-46c5-9a66-03aea78705d3",
+      "definitionVersion": "3.*.*",
       "displayName": "Azure AI Services resources should restrict network access",
       "groups": [
         "OJK-03-NETWORK-ISOLATION"
@@ -491,6 +509,7 @@
     {
       "referenceId": "net-ai-private-link",
       "definitionId": "d6759c02-b87f-42b7-892e-71b3f471d782",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure AI Services resources should use Azure Private Link",
       "groups": [
         "OJK-03-NETWORK-ISOLATION"
@@ -505,6 +524,7 @@
     {
       "referenceId": "net-arc-servers-private-link",
       "definitionId": "efa3f296-ff2b-4f38-bc0d-5ef12c965b68",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure Arc-enabled servers should be configured with an Azure Arc Private Link Scope",
       "groups": [
         "OJK-03-NETWORK-ISOLATION"
@@ -520,6 +540,7 @@
     {
       "referenceId": "net-arc-k8s-private-link",
       "definitionId": "12e7176a-4919-47ef-922b-34eda4c7f0ce",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure Arc-enabled kubernetes clusters should be configured with an Azure Arc Private Link Scope",
       "groups": [
         "OJK-03-NETWORK-ISOLATION"
@@ -535,6 +556,7 @@
     {
       "referenceId": "net-arc-pls-public-access",
       "definitionId": "898f2439-3333-4713-af25-f1d78bc50556",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure Arc Private Link Scopes should disable public network access",
       "groups": [
         "OJK-03-NETWORK-ISOLATION"
@@ -549,6 +571,7 @@
     {
       "referenceId": "net-arc-pls-private-endpoint",
       "definitionId": "7eab1da3-2bf0-4ff0-8303-1a4277c380e8",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure Arc Private Link Scopes should be configured with a private endpoint",
       "groups": [
         "OJK-03-NETWORK-ISOLATION"
@@ -563,6 +586,7 @@
     {
       "referenceId": "iam-mfa-write",
       "definitionId": "4e6c27d5-a6ee-49cf-b2b4-d8fe90fa2b8b",
+      "definitionVersion": "1.*.*",
       "displayName": "Users must authenticate with multi-factor authentication to create or update resources",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -578,6 +602,7 @@
     {
       "referenceId": "iam-mfa-delete",
       "definitionId": "db4a9d17-db75-4f46-9fcb-9f9526604417",
+      "definitionVersion": "1.*.*",
       "displayName": "Users must authenticate with multi-factor authentication to delete resources",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -593,6 +618,7 @@
     {
       "referenceId": "iam-guest-owners",
       "definitionId": "339353f6-2387-4a45-abe4-7f529d121046",
+      "definitionVersion": "1.*.*",
       "displayName": "Guest accounts with owner permissions on Azure resources should be removed",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -607,6 +633,7 @@
     {
       "referenceId": "iam-blocked-owners",
       "definitionId": "0cfea604-3201-4e14-88fc-fae4c427a6c5",
+      "definitionVersion": "1.*.*",
       "displayName": "Blocked accounts with owner permissions on Azure resources should be removed",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -621,6 +648,7 @@
     {
       "referenceId": "iam-max-owners",
       "definitionId": "4f11b553-d42e-4e3a-89be-32ca364cad4c",
+      "definitionVersion": "3.*.*",
       "displayName": "A maximum of 3 owners should be designated for your subscription",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -635,6 +663,7 @@
     {
       "referenceId": "iam-custom-rbac",
       "definitionId": "a451c1ef-c6ca-483d-87ed-f49761e3ffb5",
+      "definitionVersion": "1.*.*",
       "displayName": "Audit usage of custom RBAC roles",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -649,6 +678,7 @@
     {
       "referenceId": "iam-ai-local-auth",
       "definitionId": "71ef260a-8f18-47b7-abcb-62d0673d94dc",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure AI Services resources should have key access disabled (disable local authentication)",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -663,6 +693,7 @@
     {
       "referenceId": "iam-storage-shared-key",
       "definitionId": "8c6a50c6-9ffd-4ae7-986f-5fa6111f9a54",
+      "definitionVersion": "2.*.*",
       "displayName": "Storage accounts should prevent shared key access",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -677,6 +708,7 @@
     {
       "referenceId": "iam-sql-entra-only",
       "definitionId": "b3a22bc9-66de-45fb-98fa-00f5df42f41a",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure SQL Database should have Microsoft Entra-only authentication enabled",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -691,6 +723,7 @@
     {
       "referenceId": "iam-apim-secrets-keyvault",
       "definitionId": "f1cc7827-022c-473e-836e-5a51cae0b249",
+      "definitionVersion": "1.*.*",
       "displayName": "API Management secret named values should be stored in Azure Key Vault",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -705,6 +738,7 @@
     {
       "referenceId": "iam-k8s-automount-token",
       "definitionId": "423dd1ba-798e-40e4-9c4d-b6902674b423",
+      "definitionVersion": "4.*.*",
       "displayName": "Kubernetes clusters should disable automounting API credentials",
       "groups": [
         "OJK-04-IDENTITY-ACCESS"
@@ -719,6 +753,7 @@
     {
       "referenceId": "base-windows-baseline",
       "definitionId": "72650e9f-97bc-4b2a-ab5f-9781a9fcecbc",
+      "definitionVersion": "2.*.*",
       "displayName": "Windows machines should meet requirements of the Azure compute security baseline",
       "groups": [
         "OJK-05-SECURITY-BASELINE"
@@ -736,6 +771,7 @@
     {
       "referenceId": "base-linux-baseline",
       "definitionId": "fc9b3da7-8347-4380-8e70-0a0361d8dedd",
+      "definitionVersion": "2.*.*",
       "displayName": "Linux machines should meet requirements for the Azure compute security baseline",
       "groups": [
         "OJK-05-SECURITY-BASELINE"
@@ -753,6 +789,7 @@
     {
       "referenceId": "base-k8s-no-privileged",
       "definitionId": "95edb821-ddaf-4404-9732-666045e056b4",
+      "definitionVersion": "9.*.*",
       "displayName": "Kubernetes cluster should not allow privileged containers",
       "groups": [
         "OJK-05-SECURITY-BASELINE"
@@ -767,6 +804,7 @@
     {
       "referenceId": "base-k8s-no-privilege-escalation",
       "definitionId": "1c6e92c9-99f0-4e55-9cf2-0c234dc48f99",
+      "definitionVersion": "8.*.*",
       "displayName": "Kubernetes clusters should not allow container privilege escalation",
       "groups": [
         "OJK-05-SECURITY-BASELINE"
@@ -781,6 +819,7 @@
     {
       "referenceId": "base-k8s-no-host-namespaces",
       "definitionId": "47a1ee2f-2a2a-4576-bf2a-e0e36709c2b8",
+      "definitionVersion": "6.*.*",
       "displayName": "Kubernetes cluster containers should not share host namespaces",
       "groups": [
         "OJK-05-SECURITY-BASELINE"
@@ -795,6 +834,7 @@
     {
       "referenceId": "base-arc-k8s-policy-extension",
       "definitionId": "6b2122c1-8120-4ff5-801b-17625a355590",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure Arc enabled Kubernetes clusters should have the Azure Policy extension installed",
       "groups": [
         "OJK-05-SECURITY-BASELINE"
@@ -810,6 +850,7 @@
     {
       "referenceId": "vuln-periodic-assessment",
       "definitionId": "bd876905-5b84-4f73-ab2d-2e7a7c4568d9",
+      "definitionVersion": "3.*.*",
       "displayName": "Machines should be configured to periodically check for missing system updates",
       "groups": [
         "OJK-06-PATCH-VULNERABILITY"
@@ -825,6 +866,7 @@
     {
       "referenceId": "vuln-system-updates",
       "definitionId": "f85bf3e0-d513-442e-89c3-1784ad63382b",
+      "definitionVersion": "1.*.*",
       "displayName": "System updates should be installed on your machines (powered by Update Center)",
       "groups": [
         "OJK-06-PATCH-VULNERABILITY"
@@ -839,6 +881,7 @@
     {
       "referenceId": "vuln-sql-on-machines",
       "definitionId": "6ba6d016-e7c3-4842-b8f2-4992ebc0d72d",
+      "definitionVersion": "1.*.*",
       "displayName": "SQL servers on machines should have vulnerability findings resolved",
       "groups": [
         "OJK-06-PATCH-VULNERABILITY"
@@ -853,6 +896,7 @@
     {
       "referenceId": "mon-defender-servers",
       "definitionId": "4da35fc9-c9e7-4960-aec9-797fe7d9051d",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure Defender for servers should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -869,6 +913,7 @@
     {
       "referenceId": "mon-defender-sql-on-machines",
       "definitionId": "6581d072-105e-4418-827f-bd446d56421b",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure Defender for SQL servers on machines should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -885,6 +930,7 @@
     {
       "referenceId": "mon-defender-containers",
       "definitionId": "1c988dd6-ade4-430f-a608-2a3e5b0a6d38",
+      "definitionVersion": "1.*.*",
       "displayName": "Microsoft Defender for Containers should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -900,6 +946,7 @@
     {
       "referenceId": "mon-arc-k8s-defender-extension",
       "definitionId": "8dfab9c4-fe7b-49ad-85e4-1e9be085358f",
+      "definitionVersion": "6.*.*-preview",
       "displayName": "[Preview]: Azure Arc enabled Kubernetes clusters should have Microsoft Defender for Cloud extension installed",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -914,6 +961,7 @@
     {
       "referenceId": "mon-defender-sql-db",
       "definitionId": "7fe3b40f-802b-4cdd-8bd4-fd799c948cc2",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure Defender for Azure SQL Database servers should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -928,6 +976,7 @@
     {
       "referenceId": "mon-defender-storage",
       "definitionId": "640d2586-54d2-465f-877f-9ffc1d2109f4",
+      "definitionVersion": "1.*.*",
       "displayName": "Microsoft Defender for Storage should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -942,6 +991,7 @@
     {
       "referenceId": "mon-defender-keyvault",
       "definitionId": "0e6763cc-5078-4e64-889d-ff4d9a839047",
+      "definitionVersion": "1.*.*",
       "displayName": "Azure Defender for Key Vault should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -956,6 +1006,7 @@
     {
       "referenceId": "mon-defender-ai",
       "definitionId": "c2c0c6d8-007b-4a48-8d9b-3539bddd8e87",
+      "definitionVersion": "1.*.*",
       "displayName": "Microsoft Defender for AI Services should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -970,6 +1021,7 @@
     {
       "referenceId": "mon-alert-email-high",
       "definitionId": "6e2593d9-add6-4083-9c9b-4b7d2188c899",
+      "definitionVersion": "1.*.*",
       "displayName": "Email notification for high severity alerts should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -984,6 +1036,7 @@
     {
       "referenceId": "mon-security-contact",
       "definitionId": "4f4f78b8-e367-4b10-a341-d9a4ad5cf1c7",
+      "definitionVersion": "1.*.*",
       "displayName": "Subscriptions should have a contact email address for security issues",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -998,6 +1051,7 @@
     {
       "referenceId": "mon-alert-email-owner",
       "definitionId": "0b15565f-aa9e-48ba-8619-45960f2c314d",
+      "definitionVersion": "2.*.*",
       "displayName": "Email notification to subscription owner for high severity alerts should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -1012,6 +1066,7 @@
     {
       "referenceId": "mon-arc-windows-ama",
       "definitionId": "ec621e21-8b48-403d-a549-fc9023d4747f",
+      "definitionVersion": "1.*.*",
       "displayName": "Windows Arc-enabled machines should have Azure Monitor Agent installed",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -1026,6 +1081,7 @@
     {
       "referenceId": "mon-arc-linux-ama",
       "definitionId": "f17d891d-ff20-46f2-bad3-9e0a5403a4d3",
+      "definitionVersion": "1.*.*",
       "displayName": "Linux Arc-enabled machines should have Azure Monitor Agent installed",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -1040,6 +1096,7 @@
     {
       "referenceId": "mon-keyvault-logs",
       "definitionId": "cf820ca0-f99e-4f3e-84fb-66e913812d21",
+      "definitionVersion": "5.*.*",
       "displayName": "Resource logs in Key Vault should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -1054,6 +1111,7 @@
     {
       "referenceId": "mon-sql-auditing",
       "definitionId": "a6fb4358-5bf4-4ad7-ba82-2cd2f41ce5e9",
+      "definitionVersion": "2.*.*",
       "displayName": "Auditing on SQL server should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -1068,6 +1126,7 @@
     {
       "referenceId": "mon-ai-diagnostic-logs",
       "definitionId": "1b4d1c4e-934c-4703-944c-27c82c06bebb",
+      "definitionVersion": "1.*.*",
       "displayName": "Diagnostic logs in Azure AI services resources should be enabled",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -1082,6 +1141,7 @@
     {
       "referenceId": "mon-diagnostic-settings",
       "definitionId": "7f89b1eb-583c-429a-8828-af049802c1d9",
+      "definitionVersion": "2.*.*",
       "displayName": "Audit diagnostic setting for selected resource types",
       "groups": [
         "OJK-07-MONITORING-INCIDENT"
@@ -1097,6 +1157,7 @@
     {
       "referenceId": "sp-service-health-alert",
       "definitionId": "98903777-a9f6-47f5-90a9-acaf62ab01a8",
+      "definitionVersion": "1.*.*",
       "displayName": "Configure subscriptions to enable service health alert monitoring rule",
       "groups": [
         "OJK-08-PROVIDER-MONITORING"
@@ -1115,6 +1176,7 @@
     {
       "referenceId": "bcp-vm-backup",
       "definitionId": "013e242c-8828-4970-87b3-ab247555486d",
+      "definitionVersion": "3.*.*",
       "displayName": "Azure Backup should be enabled for Virtual Machines",
       "groups": [
         "OJK-09-BACKUP-RESILIENCE"
@@ -1129,6 +1191,7 @@
     {
       "referenceId": "bcp-storage-zone-redundant",
       "definitionId": "85b005b2-95fc-4953-b9cb-f9ee6427c754",
+      "definitionVersion": "1.*.*-preview",
       "displayName": "[Preview]: Storage Accounts should be Zone Redundant",
       "groups": [
         "OJK-09-BACKUP-RESILIENCE"
@@ -1143,6 +1206,7 @@
     {
       "referenceId": "bcp-sql-zone-redundant",
       "definitionId": "6221cac0-bb8d-40f4-9535-5d03f713f054",
+      "definitionVersion": "1.*.*-preview",
       "displayName": "[Preview]: SQL Databases should be Zone Redundant",
       "groups": [
         "OJK-09-BACKUP-RESILIENCE"
@@ -1157,6 +1221,7 @@
     {
       "referenceId": "bcp-aks-zone-redundant",
       "definitionId": "2dec5f47-bc40-40d1-8c7d-a39d9d6808d1",
+      "definitionVersion": "1.*.*-preview",
       "displayName": "[Preview]: Azure Kubernetes Service Managed Clusters should be Zone Redundant",
       "groups": [
         "OJK-09-BACKUP-RESILIENCE"
@@ -1171,6 +1236,7 @@
     {
       "referenceId": "bcp-recovery-vault-zone-redundant",
       "definitionId": "ae243d87-5cf3-4dce-90bd-6d62be328de3",
+      "definitionVersion": "1.*.*-preview",
       "displayName": "[Preview]: Backup and Site Recovery should be Zone Redundant",
       "groups": [
         "OJK-09-BACKUP-RESILIENCE"
@@ -1185,6 +1251,7 @@
     {
       "referenceId": "bcp-vm-zone-aligned",
       "definitionId": "42f4f3a2-7d20-4c13-a05d-01857a626c22",
+      "definitionVersion": "1.*.*-preview",
       "displayName": "[Preview]: Virtual Machines should be Zone Aligned",
       "groups": [
         "OJK-09-BACKUP-RESILIENCE"
@@ -1199,6 +1266,7 @@
     {
       "referenceId": "bcp-keyvault-purge-protection",
       "definitionId": "0b60c0b2-2dc2-4e1c-b5c9-abbed971de53",
+      "definitionVersion": "2.*.*",
       "displayName": "Key vaults should have deletion protection enabled",
       "groups": [
         "OJK-09-BACKUP-RESILIENCE"
@@ -1213,6 +1281,7 @@
     {
       "referenceId": "bcp-keyvault-soft-delete",
       "definitionId": "1e66c121-a66a-4b1f-9b83-0fd99bf0fc2d",
+      "definitionVersion": "3.*.*",
       "displayName": "Key vaults should have soft delete enabled",
       "groups": [
         "OJK-09-BACKUP-RESILIENCE"

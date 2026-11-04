@@ -1,0 +1,50 @@
+name: Bug report
+description: A template, policy or query doesn't work as described.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Don't paste tenant, subscription or resource IDs, resource names, approval letter numbers or other
+        details from your environment. For a security issue, follow SECURITY.md instead of opening an issue.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Terraform
+        - Bicep
+        - Mapping or custom policy
+        - Evidence queries
+        - Demo lab
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: Include the command you ran and the error message, with your own identifiers removed.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Terraform and azurerm, Bicep CLI, or Azure CLI version, and the repository commit or release.
+      placeholder: Terraform 1.17.1, azurerm 5.12.0, commit abc1234
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Deployment scope
+      options:
+        - Management group
+        - Subscription
+        - Resource group
+        - Not applicable

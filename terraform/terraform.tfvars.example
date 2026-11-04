@@ -1,8 +1,11 @@
 # Copy to terraform.tfvars and fill in. Do not commit real IDs to a shared repository.
 subscription_id     = "00000000-0000-0000-0000-000000000000"
 scope_type          = "management_group" # management_group | subscription | resource_group
-management_group_id = "/providers/Microsoft.Management/managementGroups/<platform-or-landing-zones-mg>"
+management_group_id = "/providers/Microsoft.Management/managementGroups/<intermediate-root-mg>"
 # resource_group_names = ["<rg-name>"]     # only for scope_type = "resource_group"
+
+# Optional: leave out management groups or subscriptions, for example an Azure landing zone Sandbox.
+# not_scopes = ["/providers/Microsoft.Management/managementGroups/<sandbox-mg>"]
 
 location                  = "indonesiacentral"
 list_of_allowed_locations = ["indonesiacentral"]

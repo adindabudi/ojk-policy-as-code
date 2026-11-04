@@ -1,9 +1,11 @@
 output "custom_definition_id" {
-  value = azurerm_policy_definition.ai_deployment_types.id
+  description = "Resource ID of the custom policy ojk-ai-approved-deployment-types. The Bicep exemption template needs it as aiPolicyDefinitionId."
+  value       = azurerm_policy_definition.ai_deployment_types.id
 }
 
 output "initiative_id" {
-  value = local.initiative_id
+  description = "Resource ID of the OJK initiative (policy set definition)."
+  value       = local.initiative_id
 }
 
 output "assignment_id" {
@@ -22,9 +24,11 @@ output "assignment_principal_ids" {
 }
 
 output "offshore_exemption_ids" {
-  value = { for key, e in azurerm_resource_group_policy_exemption.offshore : key => e.id }
+  description = "Policy exemptions for approved offshore placements, keyed like offshore_exemptions."
+  value       = { for key, e in azurerm_resource_group_policy_exemption.offshore : key => e.id }
 }
 
 output "offshore_ai_assignment_ids" {
-  value = { for key, a in azurerm_resource_group_policy_assignment.offshore_ai : key => a.id }
+  description = "Narrower AI deployment type assignments for approved offshore placements, keyed like offshore_exemptions."
+  value       = { for key, a in azurerm_resource_group_policy_assignment.offshore_ai : key => a.id }
 }

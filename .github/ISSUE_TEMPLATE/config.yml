@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security issue
+    url: https://github.com/adindabudi/ojk-policy-as-code/blob/main/SECURITY.md
+    about: Please don't report security issues in public issues.
+  - name: Questions and support
+    url: https://github.com/adindabudi/ojk-policy-as-code/blob/main/SUPPORT.md
+    about: How to get help with this sample.

@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Updates .terraform.lock.hcl within the version ranges in versions.tf.
+  - package-ecosystem: terraform
+    directories:
+      - /terraform
+      - /examples/demo-lab/terraform
+    schedule:
+      interval: monthly
+    groups:
+      terraform-providers:
+        patterns: ["*"]

@@ -32,6 +32,14 @@ param aiPolicyDefinitionId string = ''
 @description('Effect of the narrower AI assignment. Use the same value as effectDataLocation on the initiative.')
 param aiEffect string = 'Deny'
 
+@description('Enforcement mode of the narrower AI assignment. Use the same value as enforcementMode on the initiative.')
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+param enforcementMode string = 'Default'
+
+@description('Exemption name, 64 characters at most.')
 @maxLength(64)
 param exemptionName string = 'ojk-offshore-${uniqueString(resourceGroup().id)}'
 
@@ -43,6 +51,7 @@ resource aiAssignment 'Microsoft.Authorization/policyAssignments@2025-11-01' = i
     displayName: 'OJK approved AI deployment types - ${ojkApprovalReference}'
     description: 'AI deployment types approved for this offshore placement: ${join(approvedAiDeploymentTypes, ', ')}.'
     policyDefinitionId: aiPolicyDefinitionId
+    enforcementMode: enforcementMode
     parameters: {
       effect: { value: aiEffect }
       allowedDeploymentTypes: { value: approvedAiDeploymentTypes }
@@ -55,6 +64,7 @@ resource aiAssignment 'Microsoft.Authorization/policyAssignments@2025-11-01' = i
   }
 }
 
+// Policy exemptions don't have a GA API version yet, so this resource uses a preview version.
 resource exemption 'Microsoft.Authorization/policyExemptions@2024-12-01-preview' = {
   name: exemptionName
   properties: {

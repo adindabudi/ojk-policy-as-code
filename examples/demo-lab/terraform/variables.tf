@@ -1,6 +1,11 @@
 variable "subscription_id" {
   description = "Subscription for the lab. Use a non-production subscription."
   type        = string
+
+  validation {
+    condition     = can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.subscription_id))
+    error_message = "subscription_id must be a subscription GUID."
+  }
 }
 
 variable "prefix" {
@@ -27,13 +32,15 @@ variable "offshore_location" {
 }
 
 variable "vm_size" {
-  type    = string
-  default = "Standard_D2s_v5"
+  description = "Size of the VMs that play on-premises servers."
+  type        = string
+  default     = "Standard_D2s_v5"
 }
 
 variable "admin_username" {
-  type    = string
-  default = "labadmin"
+  description = "Local administrator name on the lab VMs. The password is generated; read it with: terraform output -raw admin_password"
+  type        = string
+  default     = "labadmin"
 }
 
 variable "servers" {
@@ -63,7 +70,11 @@ variable "servers" {
 }
 
 variable "ai_model" {
-  description = "Model deployment in the approved offshore placement."
+  description = <<-EOT
+    Model deployment in the approved offshore placement. Models retire over time: check that the model, version and
+    deployment type are still offered in offshore_location before you deploy, for example:
+    az cognitiveservices model list -l southeastasia --query "[?model.name=='gpt-5.4-mini']" -o table
+  EOT
   type = object({
     deployment_name = string
     name            = string
@@ -81,7 +92,8 @@ variable "ai_model" {
 }
 
 variable "tags" {
-  type = map(string)
+  description = "Tags for every lab resource."
+  type        = map(string)
   default = {
     purpose   = "ojk-policy-demo"
     lifecycle = "temporary"

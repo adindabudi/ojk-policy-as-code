@@ -1,0 +1,9 @@
+# Every change needs a review from the maintainers. In your own copy, replace these with your platform
+# and compliance teams, and require their review for the paths that change OJK controls.
+*                     @adindabudi
+
+# Control content: what is checked, with which effect, and which checklist row it supports.
+/mapping/             @adindabudi
+/policies/            @adindabudi
+/terraform/           @adindabudi
+/bicep/               @adindabudi

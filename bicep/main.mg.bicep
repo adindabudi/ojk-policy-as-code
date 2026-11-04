@@ -2,7 +2,7 @@
 // Definitions are created in the target management group and assigned there.
 targetScope = 'managementGroup'
 
-@description('Region for the policy assignment identity (metadata only).')
+@description('Region of the policy assignment\'s managed identity. Keep it in an allowed region.')
 param location string = 'indonesiacentral'
 
 @description('Regions allowed for resources and resource groups. Azure Arc resources keep their metadata in this region.')
@@ -16,6 +16,7 @@ param allowedAiDeploymentTypes array = [
   'ProvisionedManaged'
 ]
 
+@description('Effect of the location and AI deployment type controls (OJK-01). Switch to Deny after every approved offshore placement has an exemption.')
 @allowed([
   'Audit'
   'Deny'
@@ -23,6 +24,7 @@ param allowedAiDeploymentTypes array = [
 ])
 param effectDataLocation string = 'Audit'
 
+@description('Effect of the configuration controls that support Deny, such as public network access, TLS versions and local authentication.')
 @allowed([
   'Audit'
   'Deny'
@@ -30,12 +32,14 @@ param effectDataLocation string = 'Audit'
 ])
 param effectPreventive string = 'Audit'
 
+@description('Effect of the AuditIfNotExists controls, such as Defender plans, logs, machine configuration, update assessment and backup.')
 @allowed([
   'AuditIfNotExists'
   'Disabled'
 ])
 param effectDetective string = 'AuditIfNotExists'
 
+@description('Effect of the Kubernetes controls for AKS and Azure Arc-enabled Kubernetes clusters.')
 @allowed([
   'Audit'
   'Deny'
@@ -43,12 +47,14 @@ param effectDetective string = 'AuditIfNotExists'
 ])
 param effectKubernetes string = 'Audit'
 
+@description('Effect of the customer-managed key controls (storage, SQL, Foundry). Audit or Disabled only, because the key choice depends on the data.')
 @allowed([
   'Audit'
   'Disabled'
 ])
 param effectCustomerManagedKey string = 'Audit'
 
+@description('Effect of the zone redundancy controls. These built-ins are in preview: set Disabled if you don\'t use preview policies in production.')
 @allowed([
   'Audit'
   'Deny'
@@ -56,12 +62,14 @@ param effectCustomerManagedKey string = 'Audit'
 ])
 param effectResilience string = 'Audit'
 
+@description('\'true\' evaluates Azure Arc-enabled servers in the machine configuration controls (security baseline and secure protocols).')
 @allowed([
   'true'
   'false'
 ])
 param includeArcMachines string = 'true'
 
+@description('Resource types that must have diagnostic settings (OJK-07).')
 param diagnosticSettingsResourceTypes array = [
   'Microsoft.ApiManagement/service'
   'Microsoft.ContainerService/managedClusters'
@@ -70,6 +78,7 @@ param diagnosticSettingsResourceTypes array = [
   'Microsoft.Web/sites'
 ]
 
+@description('Resource group in each subscription where the Service Health alert rule is expected (OJK-08). rg-serviceHealthAlert matches the Azure landing zone default.')
 param serviceHealthAlertResourceGroupName string = 'rg-serviceHealthAlert'
 
 @description('DoNotEnforce evaluates compliance without applying Deny effects.')
@@ -79,12 +88,15 @@ param serviceHealthAlertResourceGroupName string = 'rg-serviceHealthAlert'
 ])
 param enforcementMode string = 'Default'
 
+@description('Policy assignment name. Management group scope allows 24 characters at most.')
 @maxLength(24)
 param assignmentName string = 'ojk-checklist-202603'
 
-@description('Scopes excluded from the assignment, for example a sandbox subscription.')
+@description('Scopes excluded from the assignment, for example the Sandbox management group of an Azure landing zone.')
 param notScopes array = []
 
+// definitionVersion pins each built-in to a major version (for example 2.*.*), so a new major version of a
+// built-in becomes a reviewed change in the mapping instead of arriving on the next deployment.
 var mapping = loadJsonContent('../mapping/ojk-policy-mapping.json')
 var aiDefinition = loadJsonContent('../policies/ai-approved-deployment-types.json')
 var customReference = 'custom:${aiDefinition.name}'
@@ -103,16 +115,18 @@ resource initiative 'Microsoft.Authorization/policySetDefinitions@2025-11-01' = 
     metadata: mapping.initiative.metadata
     parameters: mapping.initiative.parameters
     policyDefinitionGroups: mapping.groups
-    policyDefinitions: [
-      for m in mapping.members: {
-        policyDefinitionReferenceId: m.referenceId
-        policyDefinitionId: m.definitionId == customReference
-          ? aiDeploymentTypes.id
-          : tenantResourceId('Microsoft.Authorization/policyDefinitions', m.definitionId)
-        parameters: m.parameters
-        groupNames: m.groups
-      }
-    ]
+    // map() keeps each member's [parameters('...')] values as text for Azure Policy. A for-loop compiles to an ARM
+    // copy loop, which evaluates them again against this template's parameters, and the deployment then fails
+    // with UnusedPolicyParameters.
+    policyDefinitions: map(mapping.members, m => {
+      policyDefinitionReferenceId: m.referenceId
+      policyDefinitionId: m.definitionId == customReference
+        ? aiDeploymentTypes.id
+        : tenantResourceId('Microsoft.Authorization/policyDefinitions', m.definitionId)
+      definitionVersion: m.?definitionVersion
+      parameters: m.parameters
+      groupNames: m.groups
+    })
   }
 }
 

@@ -1,0 +1,25 @@
+name: Control or feature request
+description: Suggest a new control, a better built-in policy, or a change to the templates.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Don't include details from your environment or from your discussions with OJK.
+  - type: textarea
+    id: need
+    attributes:
+      label: What you need
+      description: For a control, name the checklist row (for example Part 2 B-II #6(c)) and the OJK group.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Built-in policy ID or display name, effect, and whether it applies to Azure Arc resources.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: How it would be used as evidence
+      description: What the audit or compliance team expects to see, without confidential details.

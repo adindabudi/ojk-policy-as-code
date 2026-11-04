@@ -16,6 +16,11 @@
   For real on-premises servers use a dedicated onboarding service principal and, for banks,
   an Azure Arc Private Link Scope over ExpressRoute or VPN.
 
+.NOTES
+  Security: step 2 passes your Azure Resource Manager access token to each VM as a run command parameter.
+  Anyone with administrator access to those VMs can read it while it is valid (about an hour) and act with
+  your permissions. Run the lab only in an isolated, non-production subscription, with VMs that only you manage.
+
   Azure Update Manager lists the regions that support Arc-enabled servers
   (https://learn.microsoft.com/azure/update-manager/supported-regions). Where on-demand assessment is not
   available, the script still sets periodic assessment and skips the on-demand assessment and patching calls.
